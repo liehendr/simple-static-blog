@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Hendrik Lie" />
+  <meta name="dcterms.date" content="2022-08-09" />
+  <title>xenoblog – Project Static Website</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../share/styles.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <div include-html="../share/snips/favicon.html"></div>
+  <script src="../share/script.js"></script>
+</head>
+<body>
+<div include-html="../share/snips/navbar.html"></div>
+<header id="title-block-header">
+<h1 class="title">Project Static Website</h1>
+<p class="author">Hendrik Lie</p>
+<p class="date">9 August 2022</p>
+</header>
+<h1 id="introduction">Introduction</h1>
+<p>First of all, it is my intent to have a static website in the permaweb. Therefore, it will function as my permanent archive that will never go down (supposedly). Because of my lack in technical expertises, I am going to use <a href="https://pandoc.org/MANUAL.html">Pandoc</a> as my html parser.</p>
+<p>However, to do so, we have to have some interactive elements on it. Namely, a <a href="https://www.w3schools.com/css/css_navbar.asp">navbar atop of the document or blog articles</a>. To do so, I would also need to learn a bit of css to make unordered list item listed inline. Because we need to understand a bit of CSS, we have to also know about <a href="https://www.w3schools.com/css/css_selectors.asp">CSS selector</a>.</p>
+<p>Then it comes with another feature (and challenge) of the permaweb: it is immutable. Therefore, updating would be a hassle, and we need to get creative. Hence the need to learn about <a href="https://www.w3schools.com/howto/howto_html_include.asp">how to include html snippets in html</a>.</p>
+<p>We should also consider to make the web responsive. Apparently we can do it by <a href="https://www.w3schools.com/howto/howto_js_topnav_responsive.asp">having a responsive navigation bar</a>.</p>
+<h1 id="primary-sources">Primary Sources</h1>
+<h2 id="pandoc">Pandoc</h2>
+<p>Pandoc is a very useful parser, especially for a plain html file. However, it will output only a normal standalone page with very plain appearance. To make some elements work, here are some important parts of the documentation that may be of interest.</p>
+<h3 id="include-files">Include files</h3>
+<p>Source: <a href="https://pandoc.org/MANUAL.html#general-writer-options">Pandoc, General writer options</a></p>
+<blockquote>
+<p>-H FILE, –include-in-header=FILE|URL</p>
+<p>Include contents of <em>FILE</em>, verbatim, at the end of the header. This can be used, for example, to include special CSS or JavaScript in HTML documents. This option can be used repeatedly to include multiple files in the header. They will be included in the order specified. Implies <a href="https://pandoc.org/MANUAL.html#option--standalone"><code>--standalone</code></a>.</p>
+</blockquote>
+<blockquote>
+<p>-B FILE, –include-before-body=FILE|URL</p>
+<p>Include contents of <em>FILE</em>, verbatim, at the beginning of the document body (e.g. after the <code>&lt;body&gt;</code> tag in HTML, or the <code>\begin{document}</code> command in LaTeX). This can be used to include navigation bars or banners in HTML documents. This option can be used repeatedly to include multiple files. They will be included in the order specified. Implies <a href="https://pandoc.org/MANUAL.html#option--standalone"><code>--standalone</code></a>.</p>
+</blockquote>
+<blockquote>
+<p>-A FILE, –include-after-body=FILE|URL</p>
+<p>Include contents of <em>FILE</em>, verbatim, at the end of the document body (before the <code>&lt;/body&gt;</code> tag in HTML, or the <code>\end{document}</code> command in LaTeX). This option can be used repeatedly to include multiple files. They will be included in the order specified. Implies <a href="https://pandoc.org/MANUAL.html#option--standalone"><code>--standalone</code></a>.</p>
+</blockquote>
+<h3 id="mathjax">Mathjax</h3>
+<p>Source: Pandoc, <a href="https://pandoc.org/MANUAL.html#math-rendering-in-html">Math rendering in HTML.</a></p>
+<blockquote>
+<p>The default is to render TeX math as far as possible using Unicode characters. Formulas are put inside a span with <code>class="math"</code>, so that they may be styled differently from the surrounding text if needed. However, this gives acceptable results only for basic math, usually you will want to use <a href="https://pandoc.org/MANUAL.html#option--mathjax"><code>--mathjax</code></a> or another of the following options.</p>
+</blockquote>
+<blockquote>
+<p><code>--mathjax</code>[=<em>URL</em>]</p>
+<p>Use <a href="https://www.mathjax.org/">MathJax</a> to display embedded TeX math in HTML output. TeX math will be put between <code>\(...\)</code> (for inline math) or <code>\[...\]</code> (for display math) and wrapped in <code>&lt;span&gt;</code> tags with class <code>math</code>. Then the MathJax JavaScript will render it. The <em>URL</em> should point to the <code>MathJax.js</code> load script. If a <em>URL</em> is not provided, a link to the Cloudflare CDN will be inserted.</p>
+</blockquote>
+<h3 id="divs-and-spans">Divs and Spans</h3>
+<p>It is apparently possible to also include <code>&lt;div&gt;</code> and <code>&lt;span&gt;</code> elements in pandoc. Might be helpful so we don’t have to generate the navbar from scratch with pure html. Perhaps then we can type in the navbar in pandoc before parsing it to a html snippet.</p>
+<p>Apparently it uses <code>fenced_divs</code> extension of pandoc, and attributes can be included in a pair of curly braces, or a single unbraced word that would act as a class name. The div element terminates with a string of at least three consecutive colons.</p>
+<p>Examples:</p>
+<p>Example:</p>
+<pre><code>::::: {#special .sidebar}
+Here is a paragraph.
+
+And another.
+:::::</code></pre>
+<p>Fenced divs can be nested. Opening fences are distinguished because they must have attributes:</p>
+<pre><code>::: Warning ::::::
+This is a warning.
+
+::: Danger
+This is a warning within a warning.
+:::
+::::::::::::::::::</code></pre>
+<p>Fences without attributes are always closing fences, though they don’t have to be of the same length.</p>
+<h3 id="fenced_code_attributes-edit-20220905"><code>fenced_code_attributes</code> (Edit 20220905)</h3>
+<p>This section is added far after the page is created. The original version uses only <a href="https://pandoc.org/MANUAL.html#extension-fenced_code_blocks"><code>fenced_code_blocks</code></a> with <a href="https://pandoc.org/MANUAL.html#extension-backtick_code_blocks"><code>backtick_code_blocks</code></a> that results only in plain monospace codeblocks. Just recently I learned that we can make it prettier (showing properly highlighted code blocks) with the use of <a href="https://pandoc.org/MANUAL.html#extension-fenced_code_attributes"><code>fenced_code_attributes</code></a>. The difference will be demonstrated below:</p>
+<pre><code>&lt;video width=&quot;320&quot; height=&quot;240&quot; controls&gt;
+  &lt;source src=&quot;../videos/20200723_172326.mp4&quot; type=&quot;video/mp4&quot;&gt;
+Your browser does not support the video tag.
+&lt;/video&gt;</code></pre>
+<p>The block above uses ordinary <code>fenced_code_blocks</code>, and will result in a plain monoscape code block. Basically we use backticks (`) to wrap our code block, and it appears like the following in our source file:</p>
+<pre><code>```
+&lt;... a html code block ...&gt;
+```</code></pre>
+<p>However, we can instead do the following:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;video</span> <span class="er">width</span><span class="ot">=</span><span class="st">&quot;320&quot;</span> <span class="er">height</span><span class="ot">=</span><span class="st">&quot;240&quot;</span> <span class="er">controls</span><span class="kw">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;source</span> <span class="er">src</span><span class="ot">=</span><span class="st">&quot;../videos/20200723_172326.mp4&quot;</span> <span class="er">type</span><span class="ot">=</span><span class="st">&quot;video/mp4&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Your browser does not support the video tag.</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/video&gt;</span></span></code></pre></div>
+<p>That uses the following syntax to wrap our code block:</p>
+<pre><code>```html
+&lt;... a html code block ...&gt;
+```</code></pre>
+<p>If you are a first time visitor, then congratulations! You are seeing beautifully highlighted code blocks. If you’ve seen the previous version of this page, then you’re welcome! Now you can easily follow through the codes without having an eyesore.</p>
+<h3 id="a-decent-pandoc-template-with-sidebar-and-nav">A Decent Pandoc Template With Sidebar and Nav</h3>
+<p>I just discovered <a href="https://github.com/Mushiyo/pandoc-toc-sidebar">this one template</a> recently. Probably I wouldn’t use it for the first blog, but I will just put it here for later reference.</p>
+<h2 id="navbar">Navbar</h2>
+<p>I begin my search <a href="https://css-tricks.com/centering-list-items-horizontally-slightly-trickier-than-you-might-think/">here</a>, that apparently comes from an era very long time ago. It was from 2007, and apparently today it is supposedly much more easier.</p>
+<blockquote>
+<p><strong>Update April 2013:</strong> This article is pretty old. This isn’t very hard. Just give the list centered text (e.g. <code>ul.nav { text-align: center; }</code>) and the list items inline-block (e.g. <code>ul.nav li { display: inline-block; }</code>). If you want to do it with margin for whatever reason, look into <code>width: fit-content;</code>.</p>
+</blockquote>
+<p>Then, I found a working example from <a href="https://www.w3schools.com/css/css_navbar.asp">w3schools.com</a>. The basic premise is that navigation bar is just a list of links. It can be listed vertically or horizontally, and needs a html base. Therefore the article uses <code>&lt;ul&gt;</code> and <code>&lt;li&gt;</code> elements.</p>
+<p>For example:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;ul&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;default.asp&quot;</span><span class="kw">&gt;</span>Home<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;news.asp&quot;</span><span class="kw">&gt;</span>News<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;contact.asp&quot;</span><span class="kw">&gt;</span>Contact<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;about.asp&quot;</span><span class="kw">&gt;</span>About<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/ul&gt;</span></span></code></pre></div>
+<p>Then add some css to remove the bullets and the margins and padding from the list:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">list-style-type</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">margin</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The <code>list-style-type: none;</code> part removes list markers (or bullets) from an unordered list. The later parts: <code>margin: 0;</code> and <code>padding: 0;</code> are to remove browser default settings.</p>
+<h3 id="vertical-navbar">Vertical Navbar</h3>
+<p>After we built our basic navbar elements, we can style the <code>&lt;a&gt;</code> elements inside the list, that is what happens when we hover our cursor above a list element:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>li a {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">display</span>: <span class="dv">block</span><span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">width</span>: <span class="dv">60</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The <code>display:block;</code> part is used to make the entire link area clickable instead of just the text. It also makes specifying the width, padding, margin, height, etc, possible. It is demonstrated in the <code>width: 60px;</code> section, where we make our list item 60 pixels wide, instead of the default 100%.</p>
+<p>Alternately, instead of specifying the width on <code>&lt;a&gt;</code> elements, we specify it on <code>&lt;ul&gt;</code> element. It will produce the same results as above, and coded something like this:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">list-style-type</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">margin</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">width</span>: <span class="dv">60</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>li a {</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">display</span>: <span class="dv">block</span><span class="op">;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Then we can construct a basic vertical navigation bar with a gray background color. On hovering, we want the background color of the links to change.</p>
+<p>The styling is as follows:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">list-style-type</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">margin</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">width</span>: <span class="dv">200</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#f1f1f1</span><span class="op">;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>li a {</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">display</span>: <span class="dv">block</span><span class="op">;</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">#000</span><span class="op">;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">8</span><span class="dt">px</span> <span class="dv">16</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-decoration</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co">/* Change the link color on hover */</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>li a<span class="in">:hover</span> {</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#555</span><span class="op">;</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">white</span><span class="op">;</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Apparently, it is possible to have an “active” class to the current link, so the user know which page they are on:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.active</span> {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#04AA6D</span><span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">white</span><span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>However I am not sure how to implement that. I suspect that it is done on the html part, like the following:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;ul&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;default.asp&quot;</span><span class="kw">&gt;</span>Home<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;news.asp&quot;</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;active&quot;</span><span class="kw">&gt;</span>News<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;contact.asp&quot;</span><span class="kw">&gt;</span>Contact<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;about.asp&quot;</span><span class="kw">&gt;</span>About<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/ul&gt;</span></span></code></pre></div>
+<p>Note that the “News” list item contains a class=“active” attribute.</p>
+<p>We can also center links and add borders to the navbar. We can center the links by having <code>text-align:center</code> to <code>&lt;li&gt;</code> or <code>&lt;a&gt;</code>. To add borders to your navbar, you can use the <code>border</code> property on <code>&lt;ul&gt;</code>. To add borders inside the navbar, add a <code>border-bottom</code> to all <code>&lt;li&gt;</code> elements, except for the last one.</p>
+<p>Here is an example styling definitions:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">#555</span><span class="op">;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>li {</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-bottom</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">#555</span><span class="op">;</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>li<span class="in">:last-child</span> {</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-bottom</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We can also have a full-height fixed vertical bar, or a “sticky” side navigation. Note that it might not work properly on mobile devices. To do so, we use the following styling definitions:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">list-style-type</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">margin</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">width</span>: <span class="dv">25</span><span class="dt">%</span><span class="op">;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#f1f1f1</span><span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">height</span>: <span class="dv">100</span><span class="dt">%</span><span class="op">;</span> <span class="co">/* Full height */</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">position</span>: <span class="dv">fixed</span><span class="op">;</span> <span class="co">/* Make it stick, even on scroll */</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">overflow</span>: <span class="bu">auto</span><span class="op">;</span> <span class="co">/* Enable scrolling if the sidenav has too much content */</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="horizontal-navbar">Horizontal Navbar</h3>
+<p>This is the part we are interested at: a horizontal navbar! Apparently, there are two ways to create a horizontal navbar. The first method is through the use of <strong>inline</strong> list items, while the second method uses the <strong>floating</strong> list items.</p>
+<p><strong>Inline list items</strong> for a horizontal navbar can be done by first specify the <code>&lt;li&gt;</code> elements as inline, in addition to the “standard” code from the previous section:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>li {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">display</span>: <span class="dv">inline</span><span class="op">;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>By default, <code>&lt;li&gt;</code> elements are block elements. The <code>display: inline;</code> removes line breaks before and after each list item, hence they are all displayed as a single line.</p>
+<p><strong>Floating list items</strong> for a horizontal navbar can be done by floating the <code>&lt;li&gt;</code> elements, and specify a layout for the navigation links:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>li {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">float</span>: <span class="dv">left</span><span class="op">;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>a {</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">display</span>: <span class="dv">block</span><span class="op">;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">8</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#dddddd</span><span class="op">;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The <code>float: left;</code> directive uses float to get block elements to float next to each other. Then with <code>display: block;</code>, it allows us to specify padding, height, width, margin, etc. to the block. In the above code snippet, we use <code>padding: 8px</code> directive to specify a 8 pixel padding between each <code>&lt;a&gt;</code> element. The <code>background-color: #dddddd;</code> adds a gray background color to each <code>&lt;a&gt;</code> element.</p>
+<p>Alternatively, you can add the background-color to <code>&lt;ul&gt;</code> instead of each <code>&lt;a&gt;</code> element if you want a full-width background color:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#dddddd</span><span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Let us have some examples to showcase possibilities of displaying navbars.</p>
+<p>The first example uses a basic horizontal navbar with a dark background color, and change the background color of the links when the user moves the mouse over them:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">list-style-type</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">margin</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">overflow</span>: <span class="dv">hidden</span><span class="op">;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#333</span><span class="op">;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>li {</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">float</span>: <span class="dv">left</span><span class="op">;</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>li a {</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">display</span>: <span class="dv">block</span><span class="op">;</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">white</span><span class="op">;</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">14</span><span class="dt">px</span> <span class="dv">16</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-decoration</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">/* Change the link color to #111 (black) on hover */</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>li a<span class="in">:hover</span> {</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#111</span><span class="op">;</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We can also add an “active” class to the current link to let the user know which page they are on:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.active</span> {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#04AA6D</span><span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We can also right-align links by floating the list items to the right ( <code>float:right;</code> ):</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;ul&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;#home&quot;</span><span class="kw">&gt;</span>Home<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;#news&quot;</span><span class="kw">&gt;</span>News<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;#contact&quot;</span><span class="kw">&gt;</span>Contact<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">style</span><span class="ot">=</span><span class="st">&quot;float:right&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;active&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;#about&quot;</span><span class="kw">&gt;</span>About<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/ul&gt;</span></span></code></pre></div>
+<p>We can add the <code>border-right</code> property to <code>&lt;li&gt;</code> to create link dividers:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* Add a gray right border to all list items, except the last item (last-child) */</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>li {</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-right</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">#bbb</span><span class="op">;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>li<span class="in">:last-child</span> {</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-right</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>To make the navigation bar to stick at the top or bottom of the page, we can specify:</p>
+<p><strong>Fixed top:</strong></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">position</span>: <span class="dv">fixed</span><span class="op">;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">top</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">width</span>: <span class="dv">100</span><span class="dt">%</span><span class="op">;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>Fixed bottom:</strong></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">position</span>: <span class="dv">fixed</span><span class="op">;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">bottom</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">width</span>: <span class="dv">100</span><span class="dt">%</span><span class="op">;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Note that fixed position might not work properly on mobile devices.</p>
+<p>To have a gray horizontal bar with a thin gray border, with a thin gray border, we specify:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">#e7e7e7</span><span class="op">;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#f3f3f3</span><span class="op">;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>li a {</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">#666</span><span class="op">;</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We can also add <code>position: sticky;</code> to <code>&lt;ul&gt;</code> to create a sticky navbar. A sticky element toggles between relative and fixed. The toggle depends on the scroll position. It is positioned relative until a given offset position is met in the viewport. After the condition is met, the element sticks in place like position:fixed.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ul {</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">position</span>: -webkit-sticky<span class="op">;</span> <span class="co">/* Safari */</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">position</span>: <span class="dv">sticky</span><span class="op">;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">top</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="css-selector">CSS Selector</h2>
+<p>From <a href="https://www.w3schools.com/css/css_selectors.asp">w3schools.com</a>, we learn about CSS selectors. Apparently, here’s a quick cheatsheet for the most basic CSS selectors:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Selector</th>
+<th style="text-align: left;">Example</th>
+<th style="text-align: left;">Example description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://www.w3schools.com/cssref/sel_id.asp"><code>#id</code></a></td>
+<td style="text-align: left;"><code>#firstname</code></td>
+<td style="text-align: left;">Selects the element with id=“firstname”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://www.w3schools.com/cssref/sel_class.asp"><code>.class</code></a></td>
+<td style="text-align: left;"><code>.intro</code></td>
+<td style="text-align: left;">Selects all elements with class=“intro”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://www.w3schools.com/cssref/sel_element_class.asp"><code>element.class</code></a></td>
+<td style="text-align: left;"><code>p.intro</code></td>
+<td style="text-align: left;">Selects only <code>&lt;p&gt;</code> elements with class=“intro”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://www.w3schools.com/cssref/sel_all.asp"><code>*</code></a></td>
+<td style="text-align: left;"><code>*</code></td>
+<td style="text-align: left;">Selects all elements</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="https://www.w3schools.com/cssref/sel_element.asp"><code>element</code></a></td>
+<td style="text-align: left;"><code>p</code></td>
+<td style="text-align: left;">Selects all <code>&lt;p&gt;</code> elements</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://www.w3schools.com/cssref/sel_element_comma.asp"><code>element,element,..</code></a></td>
+<td style="text-align: left;"><code>div, p</code></td>
+<td style="text-align: left;">Selects all <code>&lt;div&gt;</code> elements and all <code>&lt;p&gt;</code> elements</td>
+</tr>
+</tbody>
+</table>
+<p>The following is a basic explanation:</p>
+<p>The CSS element selector selects HTML element of the same name. For example, to select <code>&lt;p&gt;</code> element, we use <code>p</code> CSS selector:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>p {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The CSS id selector selects the id attribute of a HTML element. As the id of an element is unique within a page, the selector is used to select one unique element. In CSS, we use a hash (#) character, followed by the id of the element. For example, to select a HTML element with id=“para1”,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> we use:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#para1</span> {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The CSS class selector selects HTML elements with a specific class attribute, with the use of a period (.) character, followed by the class name.</p>
+<p>For example, if we want to find all HTML elements with class=“center”, we type:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.center</span> {</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>It is also possible to select a specific HTML elements with a certain class. For example, if we want a style to affect only <code>&lt;p&gt;</code> elements with class=“center”, we type:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>p<span class="fu">.center</span> {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Do note that HTML elements can also refer to more than one class:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;p</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;center large&quot;</span><span class="kw">&gt;</span>This paragraph refers to two classes.<span class="kw">&lt;/p&gt;</span></span></code></pre></div>
+<p>Note that a class name cannot start with a number.</p>
+<p>We can also universally select all HTML elements in a page with an asterisk (*) character:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="op">*</span> {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">blue</span><span class="op">;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Alternately, we can group select specified elements that share the same style definitions. So instead of typing:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>h1 {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>h2 {</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>p {</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We can type all of the affected elements, with each selectors separated by a comma:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>h1<span class="op">,</span> h2<span class="op">,</span> p {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="style-hr">Style HR</h2>
+<p>HR <a href="https://www.w3schools.com/tags/tag_hr.asp">(horizontal line) is a html element</a> that is usually associated with a thematic change of contents. As an element in html, it can also be <a href="https://www.w3schools.com/howto/howto_css_style_hr.asp">styled with CSS</a>. To style a <code>hr</code> element, we use its <code>border</code> property:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* Red border */</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>hr<span class="fu">.new1</span> {</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-top</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co">/* Dashed red border */</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>hr<span class="fu">.new2</span> {</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-top</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">dashed</span> <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="co">/* Dotted red border */</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>hr<span class="fu">.new3</span> {</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-top</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">dotted</span> <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="co">/* Thick red border */</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>hr<span class="fu">.new4</span> {</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">red</span><span class="op">;</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="co">/* Large rounded green border */</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>hr<span class="fu">.new5</span> {</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border</span>: <span class="dv">10</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">green</span><span class="op">;</span></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-radius</span>: <span class="dv">5</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="html-include">HTML include</h2>
+<p>By <a href="https://www.w3schools.com/howto/howto_html_include.asp">including a html</a>, we can have separate snippet files for certain global contents (maybe a navbar?), that would load along with our main page.</p>
+<p>The first step is to save the included html file as a <code>.html</code> file:</p>
+<p><strong><code>~/content.html</code></strong></p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_google_maps.asp&quot;</span><span class="kw">&gt;</span>Google Maps<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_css_animate_buttons.asp&quot;</span><span class="kw">&gt;</span>Animated Buttons<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_css_modals.asp&quot;</span><span class="kw">&gt;</span>Modal Boxes<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_js_animate.asp&quot;</span><span class="kw">&gt;</span>Animations<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_js_progressbar.asp&quot;</span><span class="kw">&gt;</span>Progress Bars<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_css_dropdown.asp&quot;</span><span class="kw">&gt;</span>Hover Dropdowns<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_js_dropdown.asp&quot;</span><span class="kw">&gt;</span>Click Dropdowns<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;howto_css_table_responsive.asp&quot;</span><span class="kw">&gt;</span>Responsive Tables<span class="kw">&lt;/a&gt;&lt;br&gt;</span></span></code></pre></div>
+<p>Then, to include a html, we have to use a w3-include-html attribute:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">w3-include-html</span><span class="ot">=</span><span class="st">&quot;content.html&quot;</span><span class="kw">&gt;&lt;/div&gt;</span></span></code></pre></div>
+<p>Afterwards, we have to include a javascript:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">includeHTML</span>() {</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> z<span class="op">,</span> i<span class="op">,</span> elmnt<span class="op">,</span> file<span class="op">,</span> xhttp<span class="op">;</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* Loop through a collection of all HTML elements: */</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  z <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">getElementsByTagName</span>(<span class="st">&quot;*&quot;</span>)<span class="op">;</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> z<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    elmnt <span class="op">=</span> z[i]<span class="op">;</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/*search for elements with a certain atrribute:*/</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    file <span class="op">=</span> elmnt<span class="op">.</span><span class="fu">getAttribute</span>(<span class="st">&quot;w3-include-html&quot;</span>)<span class="op">;</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (file) {</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>      <span class="co">/* Make an HTTP request using the attribute value as the file name: */</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>      xhttp <span class="op">=</span> <span class="kw">new</span> <span class="bu">XMLHttpRequest</span>()<span class="op">;</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>      xhttp<span class="op">.</span><span class="at">onreadystatechange</span> <span class="op">=</span> <span class="kw">function</span>() {</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="kw">this</span><span class="op">.</span><span class="at">readyState</span> <span class="op">==</span> <span class="dv">4</span>) {</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (<span class="kw">this</span><span class="op">.</span><span class="at">status</span> <span class="op">==</span> <span class="dv">200</span>) {elmnt<span class="op">.</span><span class="at">innerHTML</span> <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="at">responseText</span><span class="op">;</span>}</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (<span class="kw">this</span><span class="op">.</span><span class="at">status</span> <span class="op">==</span> <span class="dv">404</span>) {elmnt<span class="op">.</span><span class="at">innerHTML</span> <span class="op">=</span> <span class="st">&quot;Page not found.&quot;</span><span class="op">;</span>}</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>          <span class="co">/* Remove the attribute, and call this function once more: */</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>          elmnt<span class="op">.</span><span class="fu">removeAttribute</span>(<span class="st">&quot;w3-include-html&quot;</span>)<span class="op">;</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>          <span class="fu">includeHTML</span>()<span class="op">;</span></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>      xhttp<span class="op">.</span><span class="fu">open</span>(<span class="st">&quot;GET&quot;</span><span class="op">,</span> file<span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>      xhttp<span class="op">.</span><span class="fu">send</span>()<span class="op">;</span></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>      <span class="co">/* Exit the function: */</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+<p>Then at the bottom of the page, we call the <code>includeHTML()</code> function:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">includeHTML</span>()<span class="op">;</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+<p>Apparently I can’t get it work for pandoc. For the time being, I will just have to ignore this section.</p>
+<h1 id="designs">Designs</h1>
+<p>We can ignore the body part of the page, as it is handled directly by Pandoc. However, the site should have a navbar, and a footer. The original inspiration is <a href="https://write.as/kapalpecah/">write.as</a> layout, as it is simple.</p>
+<p>From that inspiration, I want to keep its simplicity, hence reduction of useless elements. We want only to read the content, and easy navigation. We however, want to make sure that it is also not ugly.</p>
+<p>Hence, it starts with a header, that would contain a neat navbar. It should also point to a homescreen, or rather, an index page. The navbar should point to our current sites, the list of which should be:</p>
+<ul>
+<li><code>xenostation</code>: leads to the index page.</li>
+<li><code>wiki</code>: leads to the traditional <a href="https://xenomancy.id/">xenomancy wiki</a>.</li>
+<li><code>uploads</code>: leads to an index for upload files, or <a href="/pages/SBA-002.html">SBA-002</a>.</li>
+<li><code>about</code>: leads to <a href="/pages/SBA-001.html">SBA-001</a>.</li>
+</ul>
+<p>The index page should be located at a root folder. Then the entries, would be primarily listed at the index page. Since we’re doing serialized entry numbers, it should ease hyperlinking. We don’t have to match the page name with the file name, just numbers.</p>
+<p>Each page other than the root index page is stored in a <code>pages</code> folder, and is serialized. For example, this article with its ticker <code>SBA-000</code>, is stored in <code>/pages/SBA-000.html</code>. We can do the same for the rest of Series I (item <code>SBA-000</code> thru <a href="/pages/SBA-999.html"><code>SBA-999</code></a>.</p>
+<p>By design, there must be no other page with names but the <code>/index.html</code> page. Therefore, we have to fit our notes and entries into one of the SBA entries. It also applies for our about page, or other related pages.</p>
+<p>Due to the nature of the permaweb, and manifest file of ArDrive, the version you’re reading depends on the manifest file you’re accessing this blog from. To test it, click on the <code>xenoashton</code> button at the navbar above, and check its date. As a rule of thumb, the date of the index page tells you which version of the blog are you seeing. Newer dates mean recent versions.</p>
+<p>Following the header, navbar, and basic directory structures, is the body of the blog. It is the content, and it can be anything we like. All contents would start their life as a markdown document, parsed by <code>pandoc</code> into a html page. Whatever is allowed in a <code>pandoc markdown</code> file, is going to find its life in the body. One tiny modification we are going to use is that we are going to justify the content in the styling definition on our header.</p>
+<p>Then comes the footer. The footer would also be equally simple. It will consist of just a horizontal line, and a centered text. The text would be <code>xenostation blog by Hendrik Lie</code>, with a link to our normal web resume page.</p>
+<p>After the design is done, we can start describe the construction. However, it is worth noting that we should only deploy the website until we at least have a working primitive. That is, the <code>index</code> page should be live, along with the <code>uploads</code> page, and the <code>about</code> page. Other pages might follow later.</p>
+<h1 id="construction">Construction</h1>
+<p>After exploring all of above, I decided to construct a simple page based on Pandoc’s default html output. Considering that Pandoc includes a way to control a lot of the page elements automatically, we don’t need any separate template. Therefore, we have divided our needs into three different partials:</p>
+<ol type="a">
+<li><code>favicon.html</code></li>
+<li><code>header.html</code></li>
+<li><code>footer.html</code></li>
+</ol>
+<p>The partials would contain necessary components to theme our website using Pandoc’s default html output. The <code>favicon.html</code> will be in charge of controlling our favicons. For that purpose I’ve already set up a public folder for our favicon, and have made our first manifest file. Hence the favicon is handled with the following lines in <code>favicon.html</code>:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!--This section is for our favicon--&gt;</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;apple-touch-icon&quot;</span> <span class="er">sizes</span><span class="ot">=</span><span class="st">&quot;180x180&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/apple-touch-icon.png?v=alJ9yEr3LX&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;icon&quot;</span> <span class="er">type</span><span class="ot">=</span><span class="st">&quot;image/png&quot;</span> <span class="er">sizes</span><span class="ot">=</span><span class="st">&quot;32x32&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/favicon-32x32.png?v=alJ9yEr3LX&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;icon&quot;</span> <span class="er">type</span><span class="ot">=</span><span class="st">&quot;image/png&quot;</span> <span class="er">sizes</span><span class="ot">=</span><span class="st">&quot;16x16&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/favicon-16x16.png?v=alJ9yEr3LX&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;manifest&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/site.webmanifest?v=alJ9yEr3LX&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;mask-icon&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/safari-pinned-tab.svg?v=alJ9yEr3LX&quot;</span> <span class="er">color</span><span class="ot">=</span><span class="st">&quot;#5bbad5&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;shortcut icon&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/favicon.ico?v=alJ9yEr3LX&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;meta</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;msapplication-TileColor&quot;</span> <span class="er">content</span><span class="ot">=</span><span class="st">&quot;#666666&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;meta</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;msapplication-config&quot;</span> <span class="er">content</span><span class="ot">=</span><span class="st">&quot;https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/browserconfig.xml?v=alJ9yEr3LX&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;meta</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;theme-color&quot;</span> <span class="er">content</span><span class="ot">=</span><span class="st">&quot;#666666&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!--Favicon section done--&gt;</span></span></code></pre></div>
+<p>Note the arweave gateway link we use to refer to our favicon files. Therefore, we don’t have to rely on any single server to host our favicons.</p>
+<p>The <code>header.html</code> file contains the following lines:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;style&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>body {</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">justify</span><span class="op">;</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>nav<span class="pp">#TOC</span> {</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#222222</span><span class="op">;</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co">/* We want a special css for navbar only ---------------------*/</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>ul<span class="fu">.nav</span> {</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">list-style-type</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">margin</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">overflow</span>: <span class="dv">hidden</span><span class="op">;</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="fu">rgb(</span><span class="dv">24</span><span class="op">,</span> <span class="dv">25</span><span class="op">,</span> <span class="dv">26</span><span class="fu">)</span><span class="op">;</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">position</span>: <span class="dv">fixed</span><span class="op">;</span></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">top</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">left</span>: <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">width</span>: <span class="dv">100</span><span class="dt">%</span><span class="op">;</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>li<span class="fu">.nav</span> {</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">float</span>: <span class="dv">left</span><span class="op">;</span></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* display: inline; */</span></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>li<span class="fu">.nav</span> a {</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>  <span class="kw">display</span>: <span class="dv">block</span><span class="op">;</span></span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span>: <span class="cn">#f1f1f1</span><span class="op">;</span></span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">padding</span>: <span class="dv">14</span><span class="dt">px</span> <span class="dv">16</span><span class="dt">px</span><span class="op">;</span></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-decoration</span>: <span class="dv">none</span><span class="op">;</span></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a><span class="co">/* Change the link color to #111 (black) on hover */</span></span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a>li<span class="fu">.nav</span> a<span class="in">:hover</span> {</span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>  <span class="kw">background-color</span>: <span class="cn">#111</span><span class="op">;</span></span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>  <span class="co">/* color: white; */</span></span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a><span class="co">/* special navbar css ends here ------------------------------*/</span></span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/style&gt;</span></span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;nav&gt;</span></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;ul</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;/index.html&quot;</span><span class="kw">&gt;</span>xenostation<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://xenomancy.id/&quot;</span><span class="kw">&gt;</span>wiki<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;/pages/SBA-002.html&quot;</span><span class="kw">&gt;</span>uploads<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span> <span class="er">style</span><span class="ot">=</span><span class="st">&quot;float:right&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;/pages/SBA-001.html&quot;</span><span class="kw">&gt;</span>about<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/nav&gt;</span></span></code></pre></div>
+<p>As seen above, it is comprised of just our basic styling definitions for justifying the body text, change the TOC background color, and custom navbar css to make a neat top horizontal navbar. In the end, we have our basic navbar, containing only four list items.</p>
+<p>At last, we have our <code>footer.html</code> file:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;style&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">.kaki</span> {</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-size</span>: <span class="dv">0.8</span><span class="dt">em</span><span class="op">;</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>hr {</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-top</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">gray</span><span class="op">;</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/style&gt;</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;hr</span> <span class="kw">/&gt;</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;kaki&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;p&gt;</span>xenostation blog by <span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://sites.google.com/view/hendriklie/&quot;</span><span class="kw">&gt;</span>Hendrik Lie<span class="kw">&lt;/a&gt;&lt;/p&gt;</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span></code></pre></div>
+<p>The footer file contains only what we need to construct our footer. It starts with a custom styling for our footer, and to override the normal <code>&lt;hr&gt;</code> element of the page. I did it because in the current color scheme, the <code>&lt;hr&gt;</code> element is not very pronounced. In fact it is almost invisible, hence the fix.</p>
+<p>Then we create a class “kaki” for the footer text. Using Pandoc’s divs directive, we make our footer text obey the styling definition for class “kaki”. Hence in the <code>footer.md</code> we have:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;style&gt;</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">.kaki</span> {</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-size</span>: <span class="dv">0.8</span><span class="dt">em</span><span class="op">;</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>hr {</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-top</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">gray</span><span class="op">;</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/style&gt;</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>**************</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>::: kaki</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>xenostation blog by [Hendrik Lie](https://sites.google.com/view/hendriklie/)</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p>It will then be rendered by <code>pandoc</code> to a html file not as a standalone html file. It doesn’t have to be a standalone, in fact it must not be, as it is going to be included into our full html output. The output file is our <code>footer.html</code> file:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;style&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">.kaki</span> {</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">center</span><span class="op">;</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-size</span>: <span class="dv">0.8</span><span class="dt">em</span><span class="op">;</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>hr {</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">border-top</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">gray</span><span class="op">;</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/style&gt;</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;hr</span> <span class="kw">/&gt;</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;kaki&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;p&gt;</span>xenostation blog by <span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://sites.google.com/view/hendriklie/&quot;</span><span class="kw">&gt;</span>Hendrik Lie<span class="kw">&lt;/a&gt;&lt;/p&gt;</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/div&gt;</span></span></code></pre></div>
+<p>Now, there are plenty of files to be included. We also need to specify certain elements through <code>pandoc</code>. It might mess up with parsing if we didn’t do it right. Typing a long command with its parameters is prone of error. We have to make it work flawlessly every single time.</p>
+<p>Hence we use the <code>pandoc defaults</code> file <code>static.yaml</code>:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">standalone</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">toc-depth</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">title-prefix</span><span class="kw">:</span><span class="at"> xenoblog</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">include-in-header</span><span class="kw">:</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> ${.}/snips/favicon.html</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="fu">include-before-body</span><span class="kw">:</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> ${.}/snips/header.html</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="fu">include-after-body</span><span class="kw">:</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> ${.}/snips/footer.html</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="fu">html-math-method</span><span class="kw">:</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">method</span><span class="kw">:</span><span class="at"> mathjax</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata-file</span><span class="kw">:</span><span class="at"> meta.yaml</span></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="fu">verbosity</span><span class="kw">:</span><span class="at"> INFO</span></span></code></pre></div>
+<p>The file handles all necessary pandoc arguments, hence when we have to compile our markdown notes, we just have to type:</p>
+<p><code>pandoc -d static input.md -o output.html</code></p>
+<p>Note that <code>-d static</code> argument ignores the <code>.yaml</code> extension of our <code>static.yaml</code> file.</p>
+<p>It includes our <code>favicon</code>, <code>header</code>, and <code>footer</code>. It also prepares the need of math equations in the body, by specifying <code>mathjax</code> method. <code>toc</code> is set to be true, so we can always have table of contents in our pages. <code>title-prefix</code> allows us to have the page to produce our blog name: <code>xenoblog</code></p>
+<p>Further <code>pandoc</code> specific theming is done with a separate metadata file: <code>meta.yaml</code></p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co">## Fonts and formatting.</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fontfamily</span><span class="kw">:</span><span class="at"> sans-serif</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mainfont</span><span class="kw">:</span><span class="at"> sans-serif</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fontcolor</span><span class="kw">:</span><span class="at"> rgb(190, 184, 176)</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">linkcolor</span><span class="kw">:</span><span class="at"> fff</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="fu">backgroundcolor</span><span class="kw">:</span><span class="at"> rgb(24, 25, 26)</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="fu">linestretch</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="fu">indent</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="fu">papersize</span><span class="kw">:</span><span class="at"> a4</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co">## Numbersections variable will add section numberings. Perhaps</span></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="fu">numbersections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="fu">secnumdepth</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="co"># part, chapter, section, or default:</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="fu">top-level-division</span><span class="kw">:</span><span class="at"> chapter</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a><span class="co">## Related to Table of Contents.</span></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a><span class="fu">toc-depth</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a><span class="fu">hyperrefoptions</span><span class="kw">:</span><span class="at"> linktoc=all</span></span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a><span class="fu">reference-section-title</span><span class="kw">:</span><span class="at"> Bibliography</span></span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a><span class="co">## Language</span></span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a><span class="fu">lang</span><span class="kw">:</span><span class="at"> en-US</span></span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a><span class="co">## More informations about the document.</span></span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a><span class="co">## I noted that if I use documentclass book, then I can&#39;t have the</span></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a><span class="co">## abstract parameter set.</span></span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a><span class="fu">documentclass</span><span class="kw">:</span><span class="at"> book</span></span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a><span class="co">## Citation section</span></span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a><span class="fu">csl</span><span class="kw">:</span><span class="at"> csl/chicago-fullnote-bibliography-with-ibid.csl</span></span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a><span class="fu">bibliography</span><span class="kw">:</span><span class="at"> common.bib</span></span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<p>The file handles background color of the output, font color, main font, etc. It is derived from the same metadata file we use for <code>Xenomancy</code>’s metadata, sans the title, author, and subtitle.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> A lot of the options aren’t explored yet, even I don’t have the referenced <code>csl</code> folder ready in the permaweb. But it is supposedly going to be necessary later, and hence will be incorporated when the time demands it.</p>
+<p>After we have all of the basic requirements, we can start generating the page. As described on the section above, we need to have at least three main pages:</p>
+<ol type="a">
+<li>an <a href="/index.html"><code>index</code></a> page.</li>
+<li>an <a href="/pages/SBA-002.html"><code>upload</code></a> page.</li>
+<li>an <a href="/pages/SBA-001.html"><code>about</code></a> page.</li>
+</ol>
+<p>The <code>index</code> page will have its inspiration from our <a href="https://clip.xenomancy.id/">web clip page</a>, but will only list two columns: a SBA entry designation list, and their corresponding description. At the moment (as of 9 August 2022) it also refer to nonexistent pages, namely SBA-003 and above. It is just a reminder for me, but in the future we are going to populate them.</p>
+<p>The <code>about</code> page is derived from our online resume. See the link at the footer to see it.</p>
+<p>The <code>upload</code> page, is naturally minimal at the moment, as we don’t have any uploads worth mentioning. However I do have some files that I uploaded on my early days in <code>ArDrive</code> and <code>Arweave</code> permaweb. Though they aren’t hosted in this public drive, I don’t want to waste my <code>AR</code> tokens to reupload simple files. Note that like our <code>index</code> page, the page also mentions to nonexistent pages, yet (as of 9 August 2022).</p>
+<p>The basic directory structures should be like the following:</p>
+<pre><code>xenostation:
+--/
+--/etc/ # basically unsorted, uncategorized files
+    --/heno.vcf # A VCARD file
+--/icons/ # Contains basic resources for favicons
+--/images/ # Contains uploaded images
+--/pages/ # Folder for our entries
+      --/SBA-000.html # this file
+      --/SBA-001.html # about page
+      --/SBA-002.html # upload page
+--/index.html # index page
+--/xenostation # manifest file</code></pre>
+<p>The manifest file should be the last thing updated, after all other files are confirmed in the arweave blockchain. The <code>Data Tx ID</code> of our manifest is the one we share to other people. Supposedly, append the <code>Data Tx ID</code> to a link for arweave gateway would give people access to our site. The link would appear like:</p>
+<p><code>https://arweave.net/&lt;Data Tx ID here&gt;</code></p>
+<p>For example, our favicon manifest can be accessed here:</p>
+<p><code>https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/</code></p>
+<p>It does not have an index file, so it would appear messy.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>At the moment of writing, none of the htmls are uploaded yet. However if you can read this from the permaweb, then the upload is complete.</p>
+<p>Cheers!</p>
+<h1 id="update-m809.2136">Update M809.2136</h1>
+<p>I feel stupid. <code>~/index.html</code> resolved into the gateway’s root folder, which of course wouldn’t work. In another word, my previous assumption that the root folder of a manifest file would be the level of the manifest file itself. It is wrong, it is the gateway’s root folder instead. Therefore we can only use relative links.</p>
+<p>From <a href="https://www.w3schools.com/html/html_filepaths.asp">HTML File Paths</a> we know that:</p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Path</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>&lt;img src="picture.jpg"&gt;</code></td>
+<td style="text-align: left;">The “picture.jpg” file is located in the same folder as the current page</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>&lt;img src="images/picture.jpg"&gt;</code></td>
+<td style="text-align: left;">The “picture.jpg” file is located in the images folder in the current folder</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>&lt;img src="/images/picture.jpg"&gt;</code></td>
+<td style="text-align: left;">The “picture.jpg” file is located in the images folder at the root of the current web</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>&lt;img src="../picture.jpg"&gt;</code></td>
+<td style="text-align: left;">The “picture.jpg” file is located in the folder one level up from the current folder</td>
+</tr>
+</tbody>
+</table>
+<p>Therefore the structure should be:</p>
+<ol type="a">
+<li>For <code>index.html</code>, the links should refer to folders in the current folder.</li>
+<li>For <code>SBA-XXX.html</code> files, links and resources should refer to a location one level up from the current folder.</li>
+</ol>
+<p>It simply means that we should have two different navbar, one for <code>index.html</code> and another for other pages. The one for index file should behave as if all resources are on the same level or under its own level. The one for everything else should behave as if all other pages are on the same level as it is except index page, and resources (images, etc) are on a location one level up from their current location.</p>
+<p>To implement that, we simply have two navbar files, and two defaults files.</p>
+<p>Navbar for index page <code>navbar-index.html</code> would be:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;nav&gt;</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;ul</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;index.html&quot;</span><span class="kw">&gt;</span>xenostation<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://xenomancy.id/&quot;</span><span class="kw">&gt;</span>wiki<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;pages/SBA-002.html&quot;</span><span class="kw">&gt;</span>uploads<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span> <span class="er">style</span><span class="ot">=</span><span class="st">&quot;float:right&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;pages/SBA-001.html&quot;</span><span class="kw">&gt;</span>about<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/nav&gt;</span></span></code></pre></div>
+<p>Navbar for other pages <code>navbar.html</code> would be:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;nav&gt;</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;ul</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;../index.html&quot;</span><span class="kw">&gt;</span>xenostation<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://xenomancy.id/&quot;</span><span class="kw">&gt;</span>wiki<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;../pages/SBA-002.html&quot;</span><span class="kw">&gt;</span>uploads<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;li</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nav&quot;</span> <span class="er">style</span><span class="ot">=</span><span class="st">&quot;float:right&quot;</span><span class="kw">&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;../pages/SBA-001.html&quot;</span><span class="kw">&gt;</span>about<span class="kw">&lt;/a&gt;&lt;/li&gt;</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/nav&gt;</span></span></code></pre></div>
+<p>The <code>header.html</code> would then only contain styling elements.</p>
+<p>Meanwhile the <code>index.html</code> page would refer contents on the same level as it is. So instead of:</p>
+<p><code>[SBA-001](/pages/SBA-001.html)</code></p>
+<p>We do:</p>
+<p><code>[SBA-001](pages/SBA-001.html)</code></p>
+<p>Then we make <code>static.yaml</code> and <code>static-index.yaml</code>, where the former would refer to <code>navbar.html</code> on <code>include-before-body</code>, and the later would instead refer to <code>navbar-index.html</code> on <code>include-before-body</code>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Note that an <code>id</code> name cannot start with a number.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>They would supposedly be defined on each and every individual document anyway.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+<div include-html="../share/snips/footer.html"></div>
+<script>
+includeHTML();
+</script>
+</body>
+</html>

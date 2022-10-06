@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Hendrik Lie" />
+  <meta name="dcterms.date" content="2022-08-11" />
+  <title>xenoblog – Deterministic vs Non-Deterministic Wallets</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../share/styles.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <div include-html="../share/snips/favicon.html"></div>
+  <script src="../share/script.js"></script>
+</head>
+<body>
+<div include-html="../share/snips/navbar.html"></div>
+<header id="title-block-header">
+<h1 class="title">Deterministic vs Non-Deterministic Wallets</h1>
+<p class="author">Hendrik Lie</p>
+<p class="date">11 August 2022</p>
+</header>
+<blockquote>
+<p>This page is copied from my <a href="https://gitlab.com/heno72/crypto-research/-/blob/main/docs/deterministic-vs-nondeterministic-wallets.md">gitlab repository</a>. You may find an updated version of the article there.</p>
+</blockquote>
+<p>In this post, we are going to review two classes of crypto wallets. The first one we will discuss is how addresses used to be managed by a wallet software, and how such wallets are backed up. The second part will discuss on how modern wallets handle wallets, and how they are backed up. Then, the next part will discuss on ways you can secure and back up your wallets. At last, we will provide a quick review of popular wallet software available on the market.</p>
+<h1 id="early-wallets">Early Wallets</h1>
+<p>Prior to 2013,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> wallets generate a buffer of fresh random private keys (typically 100 addresses) for receiving and change addresses for future use. Such wallets would also offer wallet backups, to backup all of those addresses. However, once the backup pool exhausted (the pre-generated 100 addresses are all used up), new addresses are generated.</p>
+<p>As a result, the previous backup is invalidated, and new backup must be made. This, in effect, requires users to frequently back up their wallets. The result of losing the wallet without proper backups, or infrequent ones, results in the loss of funds stored in the non backed up parts of the wallet.</p>
+<p>There are many ways to counter this issue, one of them is the use of paper wallets. Unlike its name, a paper wallet is not a wallet, but instead just a single keypair. Because of that, it promotes address reuse, false sense of security, but also requiring users to manually handle private keys. Details of its flaws could be found <a href="https://en.bitcoin.it/wiki/Paper_wallet">here</a>.</p>
+<p>Some other means to store your coins are the use of custodial wallets like Coinbase, web wallets (as a browser extension), cloud storage, removable media, and physical bitcoins. All of those are explored <a href="https://en.bitcoin.it/wiki/Storing_bitcoins">here</a> under “Bad wallet ideas” sections.</p>
+<p>The basic idea of backing up a traditional wallet is just by backing up every and all private keypairs. Personally, it means we are storing a lot of data that must be reproducible: not a single bit can change, or you might lose some if not all of your funds. However, the universe is <a href="https://www.youtube.com/watch?v=AaZ_RSt0KP8">very hostile to modern computers</a>. With the presence of a <strong>Single Event Upset</strong> might actually upset your backups or devices storing your backups, no matter how hard or how well you store them.</p>
+<p>Then, there must be a better way to secure and back up your wallets, right? Right?</p>
+<h1 id="the-era-of-seed-phrases">The Era of Seed Phrases</h1>
+<p>According to <a href="https://en.bitcoin.it/wiki/Deterministic_wallet">this article</a>, by 2019, all good wallets already adopt BIP32, a standard for hierarchial deterministic wallets. What this kind of wallet does to back up every and all possible keypairs you will ever use is by deriving all of your future keypairs from a single starting point known as a seed. That way, any modern wallet using the same seed and the same derivation path will always produce the same addresses.</p>
+<p>The seed must have a sufficiently high entropy to be secure, and also convenient to store and back up. However, as discussed in the previous section, even by storing only the entropy, no computer is safe from a Single Event Upset. Meanwhile, storing the entropy manually by writing them down is prone to typo, material damage, hard to read handwritings, data leakage while printing, and many more attack vectors. Some ideas to store your coins are also discussed <a href="https://en.bitcoin.it/wiki/Storing_bitcoins">here</a>, along with their weaknesses.</p>
+<p>Now, how could we store the seed in a manner that is easy to use and handle, encapsulating a sufficiently high amount of entropy, and has a very good error correction? Enter the age of <strong>Seed Phrases</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, as a way to losslessly compress our initial entropy into a list of 12 to 24 words, and can optionally be further protected with <strong>seed extensions</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. The way they accomplish it is by having a list of words, and have them represent a number (in <a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP39</a>, <code>0</code> to <code>2047</code>). That way, our 12 to 24 words seed phrases store a sufficiently large number in an easily human readable series of natural language words.</p>
+<p>The BIP39 wordlist has 2048 words, and for a phrase of 12 random words, the number of possible combinations would be 2048^12 = 2^132. Therefore, the phrase would have 132 bits of security. However, the last word in BIP39 standard is not random, but instead a checksum, hence the actual 12 words seed phrase has a security of only 128 bits, which is approximately the same strength of all Bitcoin private keys. It follows without saying that a 24-words seed phrase has a higher security compared to a 12-words seed phrase.</p>
+<p>That way, for any good wallets that support the generation of and restoring from seed phrases, you can retrieve your funds back. That assuming all wallets use the same seed phrase standard and the same derivation paths, which is not necessarily true. Electrum, for example, uses <a href="https://electrum.readthedocs.io/en/latest/seedphrase.html#motivation">a different seed phrase standard</a> that tries to address the issue inherent to BIP39 standard.</p>
+<p>Furthermore, not all wallets supports <strong>seed extension</strong>, which makes this matter more complicated. As mentioned before, a seed extension is a word, or a set of words used to extend the original entropy, and hence, a more secure way to store your coins. All and any seed extension combined with all and any seed phrases will produce valid seeds for any compliant deterministic clients. Therefore it offers possible deniality in the event where said seed phrases are compromised. For example, by having funds stored in keypairs derived from the seed phrases only, or from the seed phrases combined with fake seed extensions.</p>
+<p>However, wallets such as <a href="https://trustwallet.com/">Trust Wallet</a>, <a href="https://wallet.bitcoin.com/">Bitcoin.com Wallet</a>, and <a href="https://litewallet.io/">Litewallet</a>, do not support seed extension, and some can only accept 12-words seed phrases. Therefore, it is best for one to actually study each wallets first, before right away trust that they will support your backed up wallets.</p>
+<p>For myself, I have found some android wallets that actually implement BIP39 properly, with standarized derivation paths. Those are <a href="https://unstoppable.money/">Unstoppable Wallet</a>, and <a href="https://airgap.it/">Airgap</a>. Unstoppable Wallet offers a large selection of coins (mostly ERC20, BEP20, or BEP2 tokens), while Airgap only offers a smaller selection of coins. However Airgap offers a more advanced security, and the Airgap Vault can function as a hardware wallet. Airgap is also very good on making new entropies, so far having the best options to create our own entropies. Not that Airgap is the best in making it, I just find it very interesting.</p>
+<h1 id="backing-up-your-wallets">Backing Up Your Wallets</h1>
+<p>It is worth noting, that, as mentioned before, BIP39 has its own flaws: it is not true that all the user needs to restore their wallet is <a href="https://walletsrecovery.org/">just their seed phrase</a>. Some developers across the industry continue to build wallets that either:</p>
+<ul>
+<li><p>Don’t implement BIP standard(s).</p></li>
+<li><p>Implement a BIP standard, but inconsistently when compared with other wallets.</p></li>
+<li><p>Implement a BIP standard, but one that has not been widely adopted (and perhaps only by them).</p></li>
+<li><p>Don’t have clear documentation about their derivation paths, backup and recovery processes.</p></li>
+</ul>
+<blockquote>
+<p>Wallets come and go, information gets lost, and users are left with tears. Responsible wallet developers document external recovery. Users should not have to dig through the source code to figure out the Derivation Paths or Redeem Scripts.</p>
+<p><a href="https://WalletsRecovery.org"><code>WalletsRecovery.org</code></a></p>
+</blockquote>
+<h2 id="know-your-wallet">Know Your Wallet</h2>
+<p>Therefore, before settling on any wallet, you have to understand:</p>
+<ol type="1">
+<li><p>Whether they’re a deterministic wallet or not, and if yes, of what type? Things to look out for is whether or not they have an option to recover from seed phrases. If they do, they are most likely a deterministic wallet. Most wallets that I have tested tend to derive your addresses with BIP44, BIP49, or BIP84 standards. However you still have to do your own research. <a href="https://walletsrecovery.org/">This</a> is a good starting place for you to read.</p></li>
+<li><p>How they are going to derive your addresses from your seed phrases? One thing to lookout for is their <code>derivation path</code>. In the WalletsRecovery page, we could learn that via the <strong>Supported Paths</strong> column on their tables. You are required to study them yourselves, but as a general rule of thumbs:</p>
+<ul>
+<li><p>BIP44 standard tend to use <code>m/44'/0'/0'</code> + Custom, with their generated addresses starts with a <code>1</code> and might looks like <a href="bitcoin:1PC9aZC4hNX2rmmrt7uHTfYAS3hRbph4UN"><code>1PC9aZC4hNX2rmmrt7uHTfYAS3hRbph4UN</code></a> (Bitcoin donation addresses for the <a href="https://www.fsf.org/about/ways-to-donate/">Free Software Foundation</a>);</p></li>
+<li><p>BIP49 standard tend to use <code>m/49'/0'/0'</code> + Custom, and their addresses starts with a <code>3</code>, and might looks like <code>3MaFikrngEw8YK6T5sxVoRmmYL3awgh846</code> (don’t send anything to this address, I don’t know who owns it, and is generated only for demonstrative purpose!);</p></li>
+<li><p>BIP84 standard tend to use <code>m/84'/0'/0'</code> + Custom, and their addresses starts with a <code>bc1</code>, and is not case sensitive. Their addresses look like <a href="bitcoin:bc1qm9ykrnyuknzsrrp6na6pysu7vzezf5yzlzj5hu"><code>bc1qm9ykrnyuknzsrrp6na6pysu7vzezf5yzlzj5hu</code></a> (donation address for Xenomancy.id <code>:)</code> feel free to transfer some funds there lol).</p></li>
+</ul></li>
+<li><p>Whether they are single address wallets or wallets that can generate new receive addresses for each transactions. Some wallets like Airgap Wallet, Trust Wallet, and many more wallets use a single address for all transactions.</p>
+<p>This is an expected behavior in some chains whose transaction is processed in an account model, for example in Ethereum chain (ETH), or in Binance Smart Chain (BSC). They do that because you need native funds (ETH for ERC20 tokens, BNB for BEP20 tokens) in those addresses to move tokens on that chain to another address.</p>
+<p>Bitcoin and coins forked from Bitcoin like Litecoin and Dogecoin uses UTXO model (UTXO stands for Unspent Transactions), where you are expected to <a href="https://en.bitcoin.it/wiki/Address_reuse">never reuse addresses</a>. Wallets that don’t reuse addresses include: Unstoppable Wallet and BlueWallet.</p>
+<p>It is worth noting that in Unstoppable Wallet, BEP2, BEP20, and ERC20 tokens (along with their native currencies ETH and BNB) uses only a single address for reasons discussed before.</p></li>
+</ol>
+<p>To test them, you can use a randomly generated seed phrases from <a href="https://iancoleman.io/bip39/#english">here</a>, and check their generated addresses in any coins of your choosing, and compare those addresses with addresses produced by your wallet. For safety reasons, don’t actually use seed phrases generated online from that page as your actual wallet and store funds within. If, for whatever reasons, you need to use your seed phrase in that web tool, consider doing it offline by downloading the tool <a href="https://github.com/iancoleman/bip39/releases">from source</a> and run them in an offline device.</p>
+<p><strong>WARNING:</strong> YOU ARE RESPONSIBLE TO KEEP YOUR OWN SEED PHRASE SAFE AND SECURE!</p>
+<p>To test whether or not they reuse addresses, it’s a bit trickier, and you might have to dig deeper on their documentations. I for example, learned it only by trying to actually send and receive funds from those wallet apps. That is when I learned that <a href="https://community.trustwallet.com/t/removal-of-the-auto-change-address-feature/155623">Trust Wallet does not generate new addresses after every transaction</a>. The same is also <a href="https://www.reddit.com/r/AirGap/comments/t1n5ct/issue_with_address_reuse/?utm_source=share&amp;utm_medium=web2x&amp;context=3">true for Airgap Wallet</a>.</p>
+<p>However, I discovered a rather curious behavior of Airgap Wallet. Airgap Wallet did not generate new addresses after receiving a transaction, however they can detect transactions of any receive and change addresses derived from a seed phrase. How did I obtain other addresses derived from that seed phrase in Airgap Wallet? I couldn’t, but it is possible to look out other addresses from Airgap Vault, via a feature known as <a href="https://support.airgap.it/airgap-vault/address-explorer/">Address Explorer</a>.</p>
+<p>Some wallets didn’t directly provide information on how to export wallets externally, but we can get hints on their feature lists. For example, <a href="https://unstoppable.money/">Unstoppable Wallet</a> explicitly described in their “Feature List” that they supports <code>BIP 44/49/84/69</code>. <code>BIP 44/49/84</code> refers to address standards discussed before.</p>
+<h2 id="securing-your-secrets">Securing Your Secrets</h2>
+<p>Then, after understanding how your wallet derive your addresses, and what addresses they generate, the next step is to know how to secure your seed phrase and seed extension. In short, <a href="https://en.bitcoin.it/wiki/Storing_bitcoins">storing your coins</a> boils down to backing up your <a href="https://en.bitcoin.it/wiki/Seed_phrase">seed phrase</a>, and storing them in a safe place, or on multiple safe places for backup. According to the article, storing bitcoins consists of few independent goals. All of which can be explored below:</p>
+<ol type="1">
+<li><p><strong>Protection against accidental loss.</strong> Modern day deterministic wallets enabling us to secure our entire wallet just by storing the seed phrase securely. Preferrably, in multiple copies stored in multiple geographic locations for redundancy. That seed phrase can be used to restore your wallet and recover all of your funds.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>However, since a seed phrase can store any large amount of money<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, it makes little sense to keep them unprotected. Therefore, you should also further secure your seed phrase with a <a href="https://en.bitcoin.it/wiki/Seed_phrase#Two-factor_seed_phrases">seed extension</a>. Note that not all wallets support storing seed extensions.</p>
+<p>I think, it is also a common sense <a href="https://support.airgap.it/airgap-vault/plausible-deniability/">not to store your seed phrases along with their seed extension</a>. It will literally be the same as storing non-protected seed phrases. Not storing your seed extension at all is also dangerous, as losing access to that is essentially the same as losing your seed phrase.</p>
+<p>To conveniently store your seed phrases and seed extension, consider storing them with <strong><em>pencil</em></strong> and <strong><em>paper</em></strong>. Then that paper should be stored in the dark while avoiding extreme heat and moisture. Some people might decide to store them in <a href="https://blog.lopp.net/metal-bitcoin-seed-storage-stress-test--part-ii-/">a stamped or engraved metal</a>. Whatever your favorite way to store your seed phrase, make sure to keep the paper (or metal plates) safe and secret like cash or jewelry.</p></li>
+<li><p><strong>Verification that the bitcoins are genuine,</strong> and <strong>privacy and protection against spying.</strong> Storing your seed phrases only store the seed required to derive private keys. To learn about how many coins are stored within, we need a crypto wallet. Ideally, we should have a private <a href="https://en.bitcoin.it/wiki/Full_node">full node</a> that would independently verify incoming and outgoing transactions from our addresses. However it is impractical to do it nowadays, as per February 2022, the <a href="https://fortunly.com/statistics/blockchain-statistics/#gref">size of Bitcoin blockchain is 324 gigabytes</a>.</p>
+<p>There are <a href="https://en.bitcoin.it/wiki/Lightweight_node">lightweight wallets</a> that do not store the entire blockchain history, and confirms transactions by communicating with external full nodes. Lightweight wallets have their weaknesses, especially as they do not validate the rules of bitcoin, while sending addresses to third parties and receive wallet balance and history, while also skipping several security steps that can make their users vulnerable.</p>
+<p>If you value privacy, consider setting up a full node. However, if you value speed and minimal storage use, consider using light wallets. Practically all mobile wallets are lightweight wallets, simply because it is impractical to store the entire blockchain history in a mobile device.</p></li>
+<li><p><strong>Protection against theft.</strong> As discussed before, anyone with access of your keys, has access to your coins. The same is true with seed phrases and seed extension, as they provides a mean to derive all of your keys. It is not even about a physical possession of the seed phrases and seed extension, but also extends on the security of devices you use to manage your wallets.</p>
+<p>Therefore, you have to ensure that the wallet software running on your device, your device’s operating system and its hardware are safe and secure. Also worth noting that generally desktop computers <a href="https://support.airgap.it/airgap-vault/supported-devices">lack specific mobile features</a> such as Secure Storage and Biometrics to secure your secrets. Generally, <a href="https://latesthackingnews.com/2018/08/19/why-linux-is-more-secure-that-windows-but-still-not-as-malware-free-as-you-might-think/#:~:text=Linux%20does%20not%20easily%20deliver,installed%20and%20run%20as%20root.">a linux-based system is less vulnerable to malwares</a>.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p></li>
+<li><p><strong>Easy access for spending or moving bitcoins.</strong> It really depends on whether or not you need to move your coins often or not. If you need to move your coins around often, consider having a separate wallet of which a reasonable amount of funds that are expected to be moved around are stored within. The rest of your funds that don’t need to be moved around that often should be stored in a more secure wallet. Consider setting up a <a href="https://en.bitcoin.it/wiki/Cold_storage">cold storage device</a>, or <a href="https://en.bitcoin.it/wiki/Hardware_wallet">having a hardware wallet</a> that would secure your private keys and would not expose them to your hot devices.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>A compromise to all above that I find useful is to repurpose an old android device as your own airgapped hardware wallet, an approach that is done by <a href="https://airgap.it">Airgap</a> with their dual app model.</p></li>
+</ol>
+<p>As a summary, <a href="https://en.bitcoin.it/wiki/Storing_bitcoins">this page</a> cleverly explains as follows:</p>
+<blockquote>
+<p>bitcoin wallets should be backed up by writing down their <a href="https://en.bitcoin.it/wiki/Seed_phrase">seed phrase</a>, this phrase must be kept safe and secret, and when sending or receiving transactions the wallet software should obtain information about the bitcoin network from your own <a href="https://en.bitcoin.it/wiki/Full_node">full node</a>.</p>
+</blockquote>
+<p>However, it is worth noting that we should also understand the nature of our wallets of choosing (see Know Your Wallet section).</p>
+<h1 id="wallet-software-reviews">Wallet Software Reviews</h1>
+<p>There are many wallets that I have tried. Like discussed above, not every wallets supports all features, so expect some trade-offs on various wallets. Therefore, we should also consider features and standards they support. Below is a list of wallets I find worth mentioning.</p>
+<h2 id="airgap-wallet-and-airgap-vault">Airgap Wallet and Airgap Vault</h2>
+<table>
+<caption><a href="https://airgap.it/">Airgap homepage</a>. Source for <a href="https://github.com/airgap-it/airgap-vault">Airgap Vault</a> and <a href="https://github.com/airgap-it/airgap-wallet">Airgap Wallet</a> on github.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Platform</td>
+<td style="text-align: left;">Android</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Full/Light Node</td>
+<td style="text-align: left;">Light</td>
+<td style="text-align: left;">A mobile wallet.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Airgap Vault is offline, while Airgap Wallet is online. They communicates either via app switching (single device mode), or QR codes (two devices mode).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seed phrase</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">HD Wallet</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seed extension</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Cannot be included when importing secrets. However can be used when <a href="https://support.airgap.it/airgap-vault/plausible-deniability/">generating accounts</a>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP44</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIP49</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">Not available.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP84</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Address Reuse</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">However we can manually find derived addresses in Airgap Vault’s <a href="https://support.airgap.it/airgap-vault/address-explorer/">Address Explorer</a>. Airgap Wallet will automatically detect incoming transactions to those addresses.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Derive New Addresses</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">This part is only for ERC20 addresses. Airgap can only generate new addresses of the same seed phrase by applying a new seed extension.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DApp Support</td>
+<td style="text-align: left;">Not tested</td>
+<td style="text-align: left;"><a href="https://support.airgap.it/airgap-wallet/introduction/">They can use WalletConnect</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bitcoin-wallet">Bitcoin Wallet</h2>
+<table>
+<caption>Source of <a href="https://github.com/bitcoin-wallet/bitcoin-wallet/">Bitcoin Wallet</a> on github.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Platform</td>
+<td style="text-align: left;">Android</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Full/Light Node</td>
+<td style="text-align: left;">Light</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline</td>
+<td style="text-align: left;">Not tested</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seed phrase</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">Keypairs are generated, and saved as wallet backups.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seed extension</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP44</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIP49</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP84</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Based on its receive address.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Address Reuse</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">Randomly generated keypairs. Switches to a new addresses for every transactions.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Derive New Addresses</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">This is relevant only on Account model blockchains.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DApp Support</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bitcoin.com-wallet">Bitcoin.com Wallet</h2>
+<table>
+<caption>Bitcoin.com <a href="https://wallet.bitcoin.com/">homepage</a>. <a href="https://github.com/Bitcoin-com/Wallet">Source</a> on github.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Platform</td>
+<td style="text-align: left;">Android</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Full/Light Node</td>
+<td style="text-align: left;">Light</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">Requires internet to check balance.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seed phrase</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Only accepts 12-word mnemonics.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seed extension</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">Not supported.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP44</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIP49</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP84</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Address Reuse</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">Can generate new addresses.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Derive New Addresses</td>
+<td style="text-align: left;">Not tested</td>
+<td style="text-align: left;">I didn’t check its ethereum addresses very closely.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DApp Support</td>
+<td style="text-align: left;">Not tested</td>
+<td style="text-align: left;">Apparently can connect to <a href="https://github.com/bitcoin-portal/bitcoin-wallet-releases/releases/tag/v7.13.3">DApps via WalletConnect</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="electrum">Electrum</h2>
+<table>
+<caption><a href="https://electrum.org/#home">Electrum</a> website. <a href="https://github.com/spesmilo/electrum/">Electrum</a> source.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Platform</td>
+<td style="text-align: left;">Desktop</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Full/Light Node</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">You can run it as a full node or a light client.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Can be used in an offline, airgapped device as a cold wallet.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seed phrase</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Have <a href="https://electrum.readthedocs.io/en/latest/seedphrase.html">their own standard</a>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seed extension</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP44</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIP49</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP84</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Address Reuse</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Can always generate new addresses. It is up to the user.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Derive New Addresses</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">This is relevant only on Account model blockchains.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DApp Support</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="myetherwallet">MyEtherWallet</h2>
+<table>
+<caption><a href="https://www.myetherwallet.com/">MyEtherWallet</a> website. <a href="https://github.com/MyEtherWallet/MyEtherWallet">MyEtherWallet</a> source.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Platform</td>
+<td style="text-align: left;">Android</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Full/Light Node</td>
+<td style="text-align: left;">Light</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Can be used <a href="https://help.myetherwallet.com/en/articles/5380611-using-mew-offline-cold-storage">offline</a>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seed phrase</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Apparently accepts BIP39 seed phrases.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seed extension</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP44</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIP49</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP84</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Address Reuse</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">It is an ETH and ERC20 wallet with their Account model. It reuses addresses by design.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Derive New Addresses</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Can generate new addresses derived from the same seed phrase.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DApp Support</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">With MEWConnect.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="trustwallet">TrustWallet</h2>
+<table>
+<caption><a href="https://trustwallet.com/">Trustwallet</a> website. <a href="https://github.com/trustwallet/wallet-core">Trustwallet</a> source.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Platform</td>
+<td style="text-align: left;">Android</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Full/Light Node</td>
+<td style="text-align: left;">Light</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seed phrase</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">12 to 24 words mnemonics can be imported.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seed extension</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP44</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIP49</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP84</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Documentations can be found on its <a href="https://community.trustwallet.com/c/helpcenter/migration/15">support center</a> and on <a href="https://walletsrecovery.org/">WalletsRecovery</a> page.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Address Reuse</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Ability to generate a new address is <a href="https://community.trustwallet.com/t/removal-of-the-auto-change-address-feature/155623">removed</a>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Derive New Addresses</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">See above.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DApp Support</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">WalletConnect is available. Can select addresses and chains.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Other notes</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Trustwallet can be used to stake crypto in several chains. For example BNB in Beacon Chain, TRX, and LUNA. It also has a built-in decentralized exchange. When making an open order there, it would also be visible in <a href="https://www.bnbchain.world/en/trade/BTCB-1DE_BUSD-BD1">Binance DEX</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="unstoppable-wallet">Unstoppable Wallet</h2>
+<table>
+<caption><a href="https://unstoppable.money/">Unstoppable wallet</a> website. <a href="https://github.com/horizontalsystems/unstoppable-wallet-android/">Unstoppable wallet</a> source code.</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 21%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterion</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Platform</td>
+<td style="text-align: left;">Android</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Full/Light Node</td>
+<td style="text-align: left;">Light</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Offline</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">Must connect to the internet to check balances and interact with DApps.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seed phrase</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Accepts BIP39 mnemonics, between 12 to 24 words.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seed extension</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Accepts BIP39 passphrase.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP44</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Can be selected.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIP49</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Can be selected.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BIP84</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">Can be selected.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Address Reuse</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">New fresh addresses are displayed after every transactions.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Derive New Addresses</td>
+<td style="text-align: left;">False</td>
+<td style="text-align: left;">For BEP2, BEP20, and ERC20 tokens, only a single address per seed phrase and seed extension combinations is used.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">DApp Support</td>
+<td style="text-align: left;">True</td>
+<td style="text-align: left;">WalletConnect, but only on BEP20 and ERC20 chain.</td>
+</tr>
+</tbody>
+</table>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>This is the year of BIP-0032 introduction, as can be seen here: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Also known as <em>mnemonic phrase</em>, <em>seed recovery phrase</em>, or <em>backup seed phrase</em><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Also known as <em>extension word</em>, <em>passphrase</em>, or <em>13th/25th word</em>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>Likewise, anyone that has access to your seed phrase, can literally own all of the funds contained within.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>You can, for example, have funds enough to purchase an entire building laying unprotected as a page of a seed phrase backup.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>Note that it does not in any way intended to mean that linux-based system is invulnerable.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>Devices that are connected to the internet. In other words, an online device.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+<div include-html="../share/snips/footer.html"></div>
+<script>
+includeHTML();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+    "name": "",
+    "short_name": "",
+    "icons": [
+        {
+            "src": "https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/android-chrome-192x192.png?v=alJ9yEr3LX",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://arweave.net/BWpWfuaig0pwvjhqXR6SBstpFORdvl2HfIVkh9EwwqA/icons/android-chrome-512x512.png?v=alJ9yEr3LX",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#666666",
+    "background_color": "#666666",
+    "display": "standalone"
+}
