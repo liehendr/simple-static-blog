@@ -52,6 +52,7 @@ img {
 }
 h1, h2, h3, h4, h5, h6 {
   margin-top: 1.4em;
+  scroll-margin-top: 2.5rem;
 }
 h5, h6 {
   font-size: 1em;
@@ -156,6 +157,7 @@ ul.nav {
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 1000;
 }
 
 li.nav {

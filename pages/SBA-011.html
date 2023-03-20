@@ -91,6 +91,21 @@
 <p class="subtitle">Modular Dynamic Contents</p>
 <p class="date">16 September 2022</p>
 </header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#purpose">Purpose</a></li>
+<li><a href="#framework">Framework</a></li>
+<li><a href="#final-design">Final Design</a></li>
+<li><a href="#addendum">Addendum</a>
+<ul>
+<li><a href="#pandoc-defaults-file">Pandoc Defaults File</a></li>
+<li><a href="#page-html-structure-before-the-change">Page HTML structure before the change</a></li>
+<li><a href="#page-html-structure-after-the-change">Page HTML structure after the change</a></li>
+<li><a href="#case.sh">case.sh</a></li>
+</ul></li>
+</ul>
+</nav>
 <h1 id="introduction">Introduction</h1>
 <p>Permaweb is meant to be static, however the original design approach of our static blog is to build each page as a monolithic, complete package. Therefore each page is independent of one another. Changes, must be applied to every single page we’ve made, ideally never. However, my knowledge horizon only increases with time.</p>
 <p>During the writing of <a href="SBA-010.html">SBA-010</a>, I also introduce another improvement to the <code>html</code> structure of our blog. Our stylesheet can be removed from the page header to a separate file (say, <code>~/shared/style.css</code>), therefore reducing each page’s file size. The change is actually minimal, all we have to do is to include the following line to our pandoc default files:</p>
@@ -125,6 +140,9 @@
 <p>Access to XMLHttpRequest at ‘&lt;some directory with <code>file:///</code> path&gt;’ from origin ‘null’ has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, chrome-untrusted, https, isolated-app.</p>
 </blockquote>
 <p>Curiously, files hosted in arweave, accessed through arweave gateway (the <code>https://arweave.net/&lt;TXID&gt;</code>) works flawlessly. Therefore to test page inclusion with the script, we have to just use the arweave gateway links.</p>
+<blockquote>
+<p><strong>Update 20220921:</strong> We also launched a development version of the blog in <a href="https://sba.xenomancy.id/testnet/"><code>sba.xenomancy.id/testnet/</code></a>. All functions work well as expected, except for the favicon. Our server seems to hate to pull alien resources.</p>
+</blockquote>
 <p>Now our <code>includeHTML()</code> function had been briefly mentioned in <a href="SBA-000.html#html-include">SBA-000</a>, or you can read more from <a href="https://www.w3schools.com/howto/howto_html_include.asp">W3School</a>. However I couldn’t get it to work back then, simply because I know next to nothing about javascripts. However, just recently I can get it work by first including this piece of <code>&lt;script&gt;</code> element on a HTML page:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>   <span class="kw">&lt;script</span> <span class="er">src</span><span class="ot">=</span><span class="st">&quot;../share/script.js&quot;</span><span class="kw">&gt;&lt;/script&gt;</span></span></code></pre></div>
 <p>It basically tells your browser to fetch our javascript file, which contains the <code>includeHTML()</code> function. Then after the script is called on, we can invoke its ability by the following piece:</p>
